@@ -168,7 +168,7 @@ class Bibliotheques:
                 "status": 500
             }
 
-        self.livres.pop(document)
+        document.delete()
 
         return {
             "message": f"Le document dont le code est {document.code} a été supprimé de la bibliothèque.",
