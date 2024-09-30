@@ -45,11 +45,12 @@ class Bibliotheques:
         Ajoute un document à la bibliothèque en attente de vérification.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, config_db: dict) -> None:
         """
         Initialise la bibliothèque avec un dictionnaire vide pour stocker les documents.
         """
         self.livres: dict[Document | Livre | Dvd | Journal, StatuEmprunt] = {}
+        self._config_db: dict = config_db
 
     def check_exist(self, document: Document | Livre | Dvd | Journal) -> bool:
         """
@@ -280,6 +281,46 @@ class Bibliotheques:
 
         return {
             "message": f"Le document {document.code} n'a pas été emprunté.",
+            "status": 500
+        }
+
+    def get_all_document(self) -> dict:
+        return {
+            "livre": Livre.get_all(self._config_db),
+            "journal": Journal.get_all(self._config_db),
+            "dvd": Dvd.get_all(self._config_db),
+            "message": "Tous les document de la bibiothèques(livre, journal et dvd).",
+            "status": 200
+        }
+
+    def get_document(self, code: str) -> dict:
+        tmp: list[tuple] = Livre.get(self._config_db, code)
+        if tmp:
+            return {
+                "document": tmp[0],
+                "message": "le document dont la cote est {code} est un livre à bien été récupérer",
+                "status": 200
+            }
+
+        tmp: list[tuple] = Journal.get(self._config_db, code)
+        if tmp:
+            return {
+                "document": tmp[0],
+                "message": "le document dont la cote est {code} est un journal à bien été récupérer",
+                "status": 200
+            }
+
+        tmp: list[tuple] = Dvd.get(self._config_db, code)
+        if tmp:
+            return {
+                "document": tmp[0],
+                "message": "le document dont la cote est {code} est un dvd à bien été récupérer",
+                "status": 200
+            }
+
+        return {
+            "document": None,
+            "message": "le document dont la cote est {code} n'a pas été récupérer",
             "status": 500
         }
 

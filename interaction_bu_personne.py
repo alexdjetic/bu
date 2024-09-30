@@ -5,6 +5,7 @@ from livre import Livre
 from journal import Journal
 from dvd import Dvd
 from statuemprunt import StatuEmprunt
+from databaseconnection import connect_to_mysql
 
 
 def mise_attente_document(bibi: Bibliotheques, document: Document | Livre | Journal | Dvd, employer: Personne, num_usager: str) -> dict:

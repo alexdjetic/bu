@@ -1,4 +1,5 @@
 import datetime
+from databaseconnection import connect_to_mysql
 
 
 class Document:
@@ -40,17 +41,22 @@ class Document:
 
     num_document: int = 0
 
-    def __init__(self, code: str, salle: str, sur_place: bool = False, est_reserver: bool = False,
-                 online: bool = False):
+    def __init__(self, code: str, salle: str, config_db: dict, sur_place: bool = False, est_reserver: bool = False,
+                 online: bool = False, attente: bool = False):
         self.code: str = code
         self._num: str = "NA"
-        self._salle: str = salle
+        self.salle: str = salle
         self._est_reserver: bool = est_reserver
-        self._sur_place: bool = sur_place
-        self._online: bool = online
-        self._attente: bool = False
+        self.sur_place: bool = sur_place
+        self.online: bool = online
+        self._attente: bool = attente
         self._date_fin_emprunt: datetime.datetime.date = datetime.datetime(1971, 1, 1).date()
         self._date_debut_emprunt: datetime.datetime.date = datetime.datetime(1971, 1, 1).date()
+
+        # connexion à la base
+        self.config_db: dict = config_db
+
+        # increase number of docs
         Document.num_document += 1
 
     def reserver_sur_place(self, num_usager: str) -> dict:
@@ -68,7 +74,7 @@ class Document:
         self._num: str = num_usager
         self._est_reserver: bool = True
         self._attente: bool = False
-        self._date_debut_emprunt: datetime.datetime = datetime.datetime.now().date()
+        self._date_debut_emprunt: datetime.datetime.date = datetime.datetime.now().date()
         self._date_fin_emprunt: datetime.datetime = datetime.datetime.now() + datetime.timedelta(weeks=2)
 
         return {"message": f"Le document dont le code est {self.code} est réservé avec succès !", "status": 200}
@@ -108,7 +114,7 @@ class Document:
         self._num: str = num_usager
         self._est_reserver: bool = True
         self._attente: bool = False
-        self._date_debut_emprunt: datetime.datetime = datetime.datetime.now().date()
+        self._date_debut_emprunt: datetime.datetime.date = datetime.datetime.now().date()
         self._date_fin_emprunt: datetime.datetime = datetime.datetime.now() + datetime.timedelta(weeks=2)
 
         return {"message": f"Le document dont le code est {self.code} est réservé en ligne avec succès !",
