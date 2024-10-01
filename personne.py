@@ -87,7 +87,8 @@ class Personne:
     def __eq__(self, other):
         return  self.__dict__ == other.__dict__
 
-    def get(self, login: str) -> list[tuple]:
+    @staticmethod
+    def get(config_db: dict, login: str) -> list[tuple]:
         """
         Récupère les informations d'une personne à partir de son login.
 
@@ -100,7 +101,7 @@ class Personne:
         ----------
         list[tuple] : Les informations de la personne correspondante.
         """
-        cnx = connect_to_mysql(self.config_db, attempts=3)
+        cnx = connect_to_mysql(config_db, attempts=3)
 
         if cnx and cnx.is_connected():
             with cnx.cursor() as cursor:
@@ -108,7 +109,8 @@ class Personne:
                 rows = cursor.fetchall()
                 return rows
 
-    def get_all(self) -> list[tuple]:
+    @staticmethod
+    def get_all(config_db: dict) -> list[tuple]:
         """
         Récupère toutes les personnes de la base de données.
 
@@ -116,7 +118,7 @@ class Personne:
         ----------
         list[tuple] : Une liste contenant toutes les personnes enregistrées.
         """
-        cnx = connect_to_mysql(self.config_db, attempts=3)
+        cnx = connect_to_mysql(config_db, attempts=3)
 
         if cnx and cnx.is_connected():
             with cnx.cursor() as cursor:
@@ -124,7 +126,8 @@ class Personne:
                 rows = cursor.fetchall()
                 return rows
 
-    def connection(self, login: str, password: str) -> bool:
+    @staticmethod
+    def connection(config_db: dict, login: str, password: str) -> bool:
         """
         Vérifie si les identifiants fournis (login et mot de passe) correspondent à ceux d'une personne.
 
@@ -139,7 +142,7 @@ class Personne:
         ----------
         bool : True si les identifiants correspondent, False sinon.
         """
-        datas: list[tuple] = self.get_all()
+        datas: list[tuple] = Personne.get_all(config_db)
 
         for data in datas:
             if data[4] == login and data[5] == password:
@@ -216,35 +219,3 @@ class Personne:
                 return True
 
         return False
-
-
-# Section de test
-if __name__ == "__main__":
-    config = {
-        "host": "127.0.0.1",
-        "user": "root",
-        "password": "wm7ze*2b",
-        "database": "bu",
-    }
-
-    # Création d'une personne
-    personne1 = Personne("001", "admin", "Dupont", "Jean", "jean.dupont", "mdp123", config)
-
-    # Test de création dans la base de données
-    if personne1.create():
-        print("Personne créée avec succès.")
-
-    # Tentative de connexion réussie
-    if personne1.connection("jean.dupont", "mdp123"):
-        print("Connexion réussie.")
-    else:
-        print("Échec de la connexion.")
-
-    # Test de mise à jour des informations
-    personne1.nom = "Durand"
-    if personne1.update():
-        print("Informations mises à jour avec succès.")
-
-    # Test de suppression de la base de données
-    if personne1.delete():
-        print("Personne supprimée avec succès.")

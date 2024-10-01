@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %} Bibliothèques {% endblock %}
+
+{% block content %}
+<!-- Centered login form -->
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="bg-white rounded-lg shadow-md p-8 w-96">
+        <h2 class="text-2xl font-bold mb-6 text-center">Se connecter</h2>
+        <form action="/auth" method="POST">
+            <div class="mb-4">
+                <label for="login" class="block text-sm font-medium text-gray-700">Nom d'utilisateur</label>
+                <input type="text" id="login" name="login" required
+                       class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring focus:ring-blue-300" />
+            </div>
+            <div class="mb-6">
+                <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+                <input type="password" id="password" name="password" required
+                       class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring focus:ring-blue-300" />
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200">
+                Connexion
+            </button>
+        </form>
+        <p class="mt-4 text-center text-sm text-gray-600">
+            Pas encore de compte? <a href="/register" class="text-blue-600 hover:underline">Inscrivez-vous</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

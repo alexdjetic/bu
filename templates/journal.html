@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %} Bibliothèque - {{ titre }} {% endblock %}
+
+{% block content %}
+    <div class="container mx-auto p-6">
+        <div class="bg-white shadow-md rounded-lg p-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ titre }}</h1>
+            <p class="text-lg text-gray-600 mb-2"><strong class="font-semibold">date publication :</strong> {{ date_publication }}</p>
+            <p class="text-lg text-gray-600 mb-2"><strong class="font-semibold">Cote :</strong> {{ cote }}</p>
+            <p class="text-lg text-gray-600 mb-2"><strong class="font-semibold">Salle :</strong> {{ salle }}</p>
+            <p class="text-lg text-gray-600 mb-2">
+                <strong class="font-semibold">Sur place :</strong>
+                <span class="text-green-500">{% if sur_place %}Oui{% else %}<span class="text-red-500">Non</span>{% endif %}</span>
+            </p>
+            <p class="text-lg text-gray-600 mb-2">
+                <strong class="font-semibold">Disponible en ligne :</strong>
+                <span class="text-green-500">{% if online %}Oui{% else %}<span class="text-red-500">Non</span>{% endif %}</span>
+            </p>
+
+            {% if debut_emprunt and fin_emprunt %}
+                <p class="text-lg text-gray-600 mb-2">
+                    <strong class="font-semibold">Période d'emprunt :</strong> du {{ debut_emprunt }} au {{ fin_emprunt }}
+                </p>
+            {% else %}
+                <p class="text-lg text-gray-600 mb-2">
+                    <strong class="font-semibold">Non emprunté actuellement</strong>
+                </p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

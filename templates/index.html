@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %} Bibliothèques {% endblock %}
+
+{% block content %}
+<!-- Titre avec des styles Tailwind -->
+<h1 class="text-4xl font-extrabold text-center mb-8 text-blue-700">
+    Hello {{ login }}!
+</h1>
+
+<!-- Tableau stylisé avec Tailwind -->
+<h2 class="text-3xl font-bold text-gray-800 mb-4">Livre</h2>
+<div class="overflow-x-auto">
+    <table class="min-w-full table-auto border-collapse border border-gray-300 shadow-md rounded-lg">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="px-4 py-2 border border-gray-300">Cote</th>
+                <th class="px-4 py-2 border border-gray-300">Salle</th>
+                <th class="px-4 py-2 border border-gray-300">Nom du livre</th>
+                <th class="px-4 py-2 border border-gray-300">Auteur</th>
+                <th class="px-4 py-2 border border-gray-300">Sur place</th>
+                <th class="px-4 py-2 border border-gray-300">Online</th>
+                <th class="px-4 py-2 border border-gray-300">Date de début emprunt</th>
+                <th class="px-4 py-2 border border-gray-300">Date de fin emprunt</th>
+                <th class="px-4 py-2 border border-gray-300"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for livre in livres %}
+            <tr class="bg-white even:bg-gray-50">
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ livre[0] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ livre[1] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ livre[2] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ livre[3] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ livre[4] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ livre[5] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ livre[6] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ livre[7] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center"><a href="/livre/{{ livre[0] }}">consulter</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<br>
+<h2 class="text-3xl font-bold text-gray-800 mb-4">dvd</h2>
+<div class="overflow-x-auto">
+    <table class="min-w-full table-auto border-collapse border border-gray-300 shadow-md rounded-lg">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="px-4 py-2 border border-gray-300">Cote</th>
+                <th class="px-4 py-2 border border-gray-300">Salle</th>
+                <th class="px-4 py-2 border border-gray-300">Nom du livre</th>
+                <th class="px-4 py-2 border border-gray-300">Auteur</th>
+                <th class="px-4 py-2 border border-gray-300">Sur place</th>
+                <th class="px-4 py-2 border border-gray-300">Online</th>
+                <th class="px-4 py-2 border border-gray-300">Date de début emprunt</th>
+                <th class="px-4 py-2 border border-gray-300">Date de fin emprunt</th>
+                <th class="px-4 py-2 border border-gray-300"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dvd in dvds %}
+            <tr class="bg-white even:bg-gray-50">
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ dvd[0] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ dvd[1] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ dvd[2] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ dvd[3] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ dvd[4] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ dvd[5] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ dvd[6] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ dvd[7] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center"><a href="/dvd/{{ dvd[0] }}">consulter</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<br>
+<h2 class="text-3xl font-bold text-gray-800 mb-4">Journal: </h2>
+<div class="overflow-x-auto">
+    <table class="min-w-full table-auto border-collapse border border-gray-300 shadow-md rounded-lg">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="px-4 py-2 border border-gray-300">Cote</th>
+                <th class="px-4 py-2 border border-gray-300">Salle</th>
+                <th class="px-4 py-2 border border-gray-300">Titre</th>
+                <th class="px-4 py-2 border border-gray-300">Date publication</th>
+                <th class="px-4 py-2 border border-gray-300">Sur place</th>
+                <th class="px-4 py-2 border border-gray-300">Online</th>
+                <th class="px-4 py-2 border border-gray-300">Date de début emprunt</th>
+                <th class="px-4 py-2 border border-gray-300">Date de fin emprunt</th>
+                <th class="px-4 py-2 border border-gray-300"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for journal in journals %}
+            <tr class="bg-white even:bg-gray-50">
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ journal[0] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ journal[1] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ journal[2] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ journal[3] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ journal[4] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ journal[5] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ journal[6] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center">{{ journal[7] }}</td>
+                <td class="px-4 py-2 border border-gray-300 text-center"><a href="/journal/{{ journal[0] }}">consulter</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

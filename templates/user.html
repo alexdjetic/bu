@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %} Bibliothèque - Utilisateur {{ titre }} {% endblock %}
+
+{% block content %}
+    <div class="container mx-auto p-6">
+        <div class="bg-white shadow-md rounded-lg p-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4"> Bonjour, {{ nom }} {{ prenom }}</h1>
+            <p class="text-lg text-gray-600 mb-2"><strong class="font-semibold">login :</strong> {{ login }}</p>
+            <p class="text-lg text-gray-600 mb-2"><strong class="font-semibold">password :</strong> {{ cote }}</p>
+            <p class="text-lg text-gray-600 mb-2"><strong class="font-semibold">permission :</strong> {{ perm }}</p>
+        </div>
+    </div>
+{% endblock %}
