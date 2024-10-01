@@ -17,7 +17,6 @@ config = {
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Dependency to get the user's login and name from cookies
 def get_user_data(login: str = Cookie(None), nom: str = Cookie(None)):
@@ -93,10 +92,10 @@ async def auth_get(request: Request, login: str = Cookie(None)):
     return templates.TemplateResponse("login.html", {"request": request})
 
 @app.post("/auth", response_class=RedirectResponse)
-async def auth_post(login: str = Form(...), password: str = Form(...)):
+async def auth_post(login: str = Form("login"), password: str = Form("password")):
     if Personne.connection(config, login, password):
         data = Personne.get(config, login)
-        response = RedirectResponse(url="/")
+        response = RedirectResponse(url="/", status_code=302) # status code important sinon le middle renvoie en post
         response.set_cookie(key="num", value=str(data[0][0]))
         response.set_cookie(key="login", value=login)
         return response
