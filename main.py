@@ -1,4 +1,7 @@
-from flask import Flask, request, redirect, render_template, make_response, session
+from fastapi import FastAPI, Request, Depends, Cookie, HTTPException, Form
+from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 from bibiotheques import Bibliotheques
 from livre import Livre
 from journal import Journal
@@ -12,122 +15,115 @@ config = {
     "database": "bu",
 }
 
-app = Flask(__name__)
-app.secret_key = 'wm7ze*2b'
-bibio = Bibliotheques(config)
+app = FastAPI()
+templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# Dependency to get the user's login and name from cookies
+def get_user_data(login: str = Cookie(None), nom: str = Cookie(None)):
+    return login, nom
 
-@app.route("/")
-def index():
-    datas = bibio.get_all_document()
-    user_login = session.get('login', None)  # Récupère le login de la session
-    user_nom = session.get('nom', None)  # Récupère le nom de la session (si tu veux le passer)
+@app.get("/", response_class=HTMLResponse)
+async def index(request: Request, user_data: tuple = Depends(get_user_data)):
+    datas = Bibliotheques(config).get_all_document()
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+        "livres": datas["livre"],
+        "journals": datas["journal"],
+        "dvds": datas["dvd"],
+        "login": user_data[0],
+        "nom": user_data[1],
+    })
 
-    return render_template("index.html",
-                           livres=datas["livre"],
-                           journals=datas["journal"],
-                           dvds=datas["dvd"],
-                           login=user_login,
-                           nom=user_nom)
-
-
-@app.route("/livre/<cote>")
-def livre(cote):
+@app.get("/livre/{cote}", response_class=HTMLResponse)
+async def livre(cote: str, request: Request, user_data: tuple = Depends(get_user_data)):
     data = Livre.get(config, cote)
-    user_login = session.get('login', None)  # Récupère le login de la session
-    user_nom = session.get('nom', None)  # Récupère le nom de la session
-    return render_template("livre.html",
-                           cote=data[0][0],
-                           salle=data[0][1],
-                           titre=data[0][2],
-                           auteur=data[0][3],
-                           sur_place=data[0][4],
-                           online=data[0][5],
-                           debut_emprunt=data[0][6],
-                           fin_emprunt=data[0][7],
-                           login=user_login,
-                           nom=user_nom)
+    return templates.TemplateResponse("livre.html", {
+        "request": request,
+        "cote": data[0][0],
+        "salle": data[0][1],
+        "titre": data[0][2],
+        "auteur": data[0][3],
+        "sur_place": data[0][4],
+        "online": data[0][5],
+        "debut_emprunt": data[0][6],
+        "fin_emprunt": data[0][7],
+        "login": user_data[0],
+        "nom": user_data[1],
+    })
 
-
-@app.route("/dvd/<cote>")
-def dvd(cote):
+@app.get("/dvd/{cote}", response_class=HTMLResponse)
+async def dvd(cote: str, request: Request, user_data: tuple = Depends(get_user_data)):
     data = Dvd.get(config, cote)
-    user_login = session.get('login', None)  # Récupère le login de la session
-    user_nom = session.get('nom', None)  # Récupère le nom de la session
-    return render_template("dvd.html",
-                           cote=data[0][0],
-                           salle=data[0][1],
-                           titre=data[0][2],
-                           auteur=data[0][3],
-                           sur_place=data[0][4],
-                           online=data[0][5],
-                           debut_emprunt=data[0][6],
-                           fin_emprunt=data[0][7],
-                           login=user_login,
-                           nom=user_nom)
+    return templates.TemplateResponse("dvd.html", {
+        "request": request,
+        "cote": data[0][0],
+        "salle": data[0][1],
+        "titre": data[0][2],
+        "auteur": data[0][3],
+        "sur_place": data[0][4],
+        "online": data[0][5],
+        "debut_emprunt": data[0][6],
+        "fin_emprunt": data[0][7],
+        "login": user_data[0],
+        "nom": user_data[1],
+    })
 
-
-@app.route("/journal/<cote>")
-def journal(cote):
+@app.get("/journal/{cote}", response_class=HTMLResponse)
+async def journal(cote: str, request: Request, user_data: tuple = Depends(get_user_data)):
     data = Journal.get(config, cote)
-    user_login = session.get('login', None)  # Récupère le login de la session
-    user_nom = session.get('nom', None)  # Récupère le nom de la session
-    return render_template("journal.html",
-                           cote=data[0][0],
-                           salle=data[0][1],
-                           titre=data[0][2],
-                           date_publication=data[0][3],
-                           sur_place=data[0][4],
-                           online=data[0][5],
-                           debut_emprunt=data[0][6],
-                           fin_emprunt=data[0][7],
-                           login=user_login,
-                           nom=user_nom)
+    return templates.TemplateResponse("journal.html", {
+        "request": request,
+        "cote": data[0][0],
+        "salle": data[0][1],
+        "titre": data[0][2],
+        "date_publication": data[0][3],
+        "sur_place": data[0][4],
+        "online": data[0][5],
+        "debut_emprunt": data[0][6],
+        "fin_emprunt": data[0][7],
+        "login": user_data[0],
+        "nom": user_data[1],
+    })
 
-@app.route("/auth", methods=["GET"])
-def auth_get():
-    if 'num' in session:
-        return redirect("/")
+@app.get("/auth", response_class=HTMLResponse)
+async def auth_get(request: Request, login: str = Cookie(None)):
+    if login:
+        return RedirectResponse(url="/")
+    return templates.TemplateResponse("login.html", {"request": request})
 
-    return render_template("login.html")
-
-
-@app.route("/auth", methods=["POST"])
-def auth_post():
-    login = request.form.get("login")
-    password = request.form.get("password")
-
+@app.post("/auth", response_class=RedirectResponse)
+async def auth_post(login: str = Form(...), password: str = Form(...)):
     if Personne.connection(config, login, password):
         data = Personne.get(config, login)
-        session['num'] = str(data[0][0])
-        session['login'] = login
-        return redirect("/")
+        response = RedirectResponse(url="/")
+        response.set_cookie(key="num", value=str(data[0][0]))
+        response.set_cookie(key="login", value=login)
+        return response
     else:
-        return redirect("/auth")
+        return RedirectResponse(url="/auth")
 
-
-@app.route("/user")
-def user():
-    if 'num' in session:
-        user_data = Personne.get(config, session['login'])
-        return render_template("user.html",
-                               num=user_data[0][0],
-                               perm=user_data[0][1],
-                               nom=user_data[0][2],
-                               prenom=user_data[0][3],
-                               login=user_data[0][4],
-                               password=user_data[0][5])
+@app.get("/user", response_class=HTMLResponse)
+async def user(request: Request, login: str = Cookie(None)):
+    if login:
+        user_data = Personne.get(config, login)
+        return templates.TemplateResponse("user.html", {
+            "request": request,
+            "num": user_data[0][0],
+            "perm": user_data[0][1],
+            "nom": user_data[0][2],
+            "prenom": user_data[0][3],
+            "login": user_data[0][4],
+            "password": user_data[0][5],
+        })
     else:
-        return redirect("/auth")
+        return RedirectResponse(url="/auth")
 
+@app.get("/logout", response_class=RedirectResponse)
+async def logout():
+    response = RedirectResponse(url="/auth")
+    response.delete_cookie("num")
+    response.delete_cookie("login")
+    return response
 
-@app.route("/logout")
-def logout():
-    # Supprime les données de session pour déconnecter l'utilisateur
-    session.pop('num', None)
-    session.pop('login', None)
-    return redirect("/auth")
-
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+# Run with: uvicorn your_file_name:app --host 0.0.0.0 --port 5000
