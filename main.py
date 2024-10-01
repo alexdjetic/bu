@@ -13,7 +13,7 @@ config = {
 }
 
 app = Flask(__name__)
-app.secret_key = 'BAD_SECRET_KEY'  # Assure-toi de définir une clé secrète appropriée
+app.secret_key = 'wm7ze*2b'
 bibio = Bibliotheques(config)
 
 
@@ -28,7 +28,7 @@ def index():
                            journals=datas["journal"],
                            dvds=datas["dvd"],
                            login=user_login,
-                           nom=user_nom)  # Passe le login et le nom au template
+                           nom=user_nom)
 
 
 @app.route("/livre/<cote>")
@@ -46,7 +46,7 @@ def livre(cote):
                            debut_emprunt=data[0][6],
                            fin_emprunt=data[0][7],
                            login=user_login,
-                           nom=user_nom)  # Passe le login et le nom au template
+                           nom=user_nom)
 
 
 @app.route("/dvd/<cote>")
@@ -64,7 +64,7 @@ def dvd(cote):
                            debut_emprunt=data[0][6],
                            fin_emprunt=data[0][7],
                            login=user_login,
-                           nom=user_nom)  # Passe le login et le nom au template
+                           nom=user_nom)
 
 
 @app.route("/journal/<cote>")
@@ -82,7 +82,7 @@ def journal(cote):
                            debut_emprunt=data[0][6],
                            fin_emprunt=data[0][7],
                            login=user_login,
-                           nom=user_nom)  # Passe le login et le nom au template
+                           nom=user_nom)
 
 @app.route("/auth", methods=["GET"])
 def auth_get():
